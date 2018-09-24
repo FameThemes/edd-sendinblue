@@ -14,8 +14,8 @@ class EDD_SIB_Export_Customers {
 	}
 
 	function filter_cols( $cols ){
-		$cols['date_created'] = __( 'Date_Created',   'easy-digital-downloads' );
-		$cols['products'] = __( 'Products',   'easy-digital-downloads' );
+		$cols['date_created'] = __( 'Date_Created',   'edd-sib' );
+		$cols['products'] = __( 'Products',   'edd-sib' );
 		return $cols;
 	}
 	function filter_data( $list ){

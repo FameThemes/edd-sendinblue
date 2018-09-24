@@ -67,7 +67,7 @@ class EDD_SIB_Admin {
 
 			'api_key' => array(
 				'id'    => 'edd_sib_api_key',
-				'name'  => __( 'API Key', 'edd_sib' ),
+				'name'  => __( 'API Key', 'edd-sib' ),
 				'type'  => 'text',
 				'std'   => ''
 			),
@@ -75,7 +75,7 @@ class EDD_SIB_Admin {
 			// SIB_API
 			array(
 				'id'            => 'edd_sib_api_list_id',
-				'name'          => __( 'Sync To List', 'edd-free-downloads' ),
+				'name'          => __( 'Sync To List', 'edd-sib' ),
 				'type'          => 'select',
 				'options' => $options
 			),

@@ -9,7 +9,6 @@ Author URI: https://www.famethemes.com/
 */
 
 
-
 class SIB_API {
 	static private $_instance = null;
 	private $api_key = '';
@@ -123,7 +122,7 @@ class SIB_API {
 	}
 
 	function create_contact( $email_or_data = array(), $exclude_payment_ids = array() ){
-		if ( ! $this->list_id ) {
+		if ( ! $this->list_id || ! $this->api_key ) {
 			return ;
 		}
 
