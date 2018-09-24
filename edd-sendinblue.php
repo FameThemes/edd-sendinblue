@@ -122,7 +122,7 @@ class SIB_API {
 
 	}
 
-	function create_contact( $email_or_data = array() ){
+	function create_contact( $email_or_data = array(), $exclude_payment_ids = array() ){
 		if ( ! $this->list_id ) {
 			return ;
 		}
@@ -165,7 +165,6 @@ class SIB_API {
 			}
 		}
 
-
 		if ( $customer ) {
 			$args['attributes']['NAME'] = $customer->name;
 			$args['attributes']['NUMBER_OF_PURCHASES'] = $customer->purchase_count;
@@ -173,10 +172,17 @@ class SIB_API {
 			$args['attributes']['DATE_CREATED'] = $customer->date_created;
 
 			$products = array();
+
 			foreach ( $customer->get_payments( array( 'publish' ) ) as $payment ) {
-				$_d = $payment->__get( 'downloads' );
-				foreach ( $_d as $_id ) {
-					$products[ $_id['id'] ] = get_the_title( $_id['id'] );
+				$skip = false;
+				if( ! empty( $exclude_payment_ids ) && in_array( $payment->ID, $exclude_payment_ids ) ) {
+					$skip = true;
+				}
+				if ( ! $skip ) {
+					$_d = $payment->__get( 'downloads' );
+					foreach ( $_d as $_id ) {
+						$products[ $_id['id'] ] = get_the_title( $_id['id'] );
+					}
 				}
 			}
 
@@ -189,16 +195,19 @@ class SIB_API {
 
 }
 
-
 function edd_sib_payment_send_contact_info( $payment_id ){
 	$payment = new EDD_Payment( $payment_id );
 	SIB_API::get_instance()->create_contact( $payment->__get( 'email' ) );
 }
 
+function edd_sib_payment_send_deleted_contact_info( $payment_id ){
+	$payment = new EDD_Payment( $payment_id );
+	SIB_API::get_instance()->create_contact( $payment->__get( 'email' ), array( $payment_id ) );
+}
+
 function edd_sib_send_wp_customer_info( $id_or_email ){
 	SIB_API::get_instance()->create_contact( $id_or_email );
 }
-
 
 function edd_sib_send_wp_user_info( $user_id ){
 	$user = get_user_by( 'id',  $user_id );
@@ -225,6 +234,7 @@ function SIB_Init(){
 	}
 
 	add_action( 'edd_update_payment_status', 'edd_sib_payment_send_contact_info' );
+	add_action( 'edd_payment_delete', 'edd_sib_payment_send_deleted_contact_info' );
 	add_action( 'user_register', 'edd_sib_send_wp_user_info' );
 	add_action( 'edd_post_insert_customer', 'edd_sib_send_wp_customer_info' );
 
