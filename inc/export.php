@@ -23,7 +23,7 @@ class EDD_SIB_Export_Customers {
 		foreach ( $list as $index => $data ) {
 			$customer = new EDD_Customer( $data['email'] );
 			$products = array();
-			foreach ( $customer->get_payments() as $payment ) {
+			foreach ( $customer->get_payments( array( 'publish' ) ) as $payment ) {
 				$_d = $payment->__get( 'downloads' );
 				foreach ( $_d as $_id ) {
 					$products[ $_id['id'] ] = get_the_title( $_id['id'] );
@@ -38,9 +38,4 @@ class EDD_SIB_Export_Customers {
 		return $list;
 
 	}
-}
-
-add_action( 'admin_init', '__test' );
-function __test( ){
-	//EDD_SIB_Export_Customers::get_instance()->filter_data( array( 'email'=> 'e.carrasco@3fore.net') );
 }
