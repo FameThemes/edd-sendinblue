@@ -137,11 +137,12 @@ class SIB_API {
 			'email' =>  '',
 			'updateEnabled' => true,
 			'attributes' => array(
-				'NAME'   => '',
+				'NAME'                  => '',
 				'NUMBER_OF_PURCHASES'   => null,
 				'CUSTOMER_VALUE'        => null,
 				'DATE_CREATED'          => null,
-				'PRODUCTS'              => null,
+				'PURCHASED'             => null,
+				'LAST_PURCHASE_DATE'    => null,
 			),
 		) );
 
@@ -172,6 +173,8 @@ class SIB_API {
 
 			$products = array();
 
+			$last_date = 0;
+
 			foreach ( $customer->get_payments( array( 'publish' ) ) as $payment ) {
 				$skip = false;
 				if( ! empty( $exclude_payment_ids ) && in_array( $payment->ID, $exclude_payment_ids ) ) {
@@ -179,13 +182,22 @@ class SIB_API {
 				}
 				if ( ! $skip ) {
 					$_d = $payment->__get( 'downloads' );
+					$t = strtotime( $payment->__get( 'date' ) );
+					if( $t > $last_date ) {
+						$last_date = $t;
+					}
+
 					foreach ( $_d as $_id ) {
 						$products[ $_id['id'] ] = get_the_title( $_id['id'] );
 					}
 				}
 			}
 
-			$args['attributes']['PRODUCTS']     = join( '|', $products );
+			$args['attributes']['PURCHASED']     = join( '|', $products );
+			if ( $last_date ) {
+				$args['attributes']['LAST_PURCHASE_DATE']  = date('Y-m-d H:i:s', $last_date );
+			}
+
 		}
 
 		return $this->remote( 'contacts', 'POST', $args );

@@ -15,22 +15,33 @@ class EDD_SIB_Export_Customers {
 
 	function filter_cols( $cols ){
 		$cols['date_created'] = __( 'Date_Created',   'edd-sib' );
-		$cols['products'] = __( 'Products',   'edd-sib' );
+		$cols['purchased'] = __( 'Purchased',   'edd-sib' );
+		$cols['last_purchase_date'] = __( 'Last_Purchase_Date',   'edd-sib' );
 		return $cols;
 	}
 	function filter_data( $list ){
 
 		foreach ( $list as $index => $data ) {
+
 			$customer = new EDD_Customer( $data['email'] );
 			$products = array();
+			$last_date = 0;
 			foreach ( $customer->get_payments( array( 'publish' ) ) as $payment ) {
 				$_d = $payment->__get( 'downloads' );
+				$t = strtotime( $payment->__get( 'date' ) );
+				if( $t > $last_date ) {
+					$last_date = $t;
+				}
 				foreach ( $_d as $_id ) {
 					$products[ $_id['id'] ] = get_the_title( $_id['id'] );
 				}
 			}
 			$data['date_created'] = $customer->date_created;
-			$data['products']     = join( '|', $products );
+			$data['purchased']     = join( '|', $products );
+
+			if ( $last_date ) {
+				$data['last_purchase_date']  = date('Y-m-d H:i:s', $last_date );
+			}
 
 			$list[ $index ] =  $data;
 		}

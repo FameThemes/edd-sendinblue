@@ -27,7 +27,12 @@ class EDD_SIB_Admin {
 				'type' => 'date',
 			),
 			array(
-				'name' => 'PRODUCTS',
+				'name' => 'LAST_PURCHASE_DATE',
+				'category' => 'normal',
+				'type' => 'date',
+			),
+			array(
+				'name' => 'PURCHASED',
 				'category' => 'normal',
 				'type' => 'text',
 			),
