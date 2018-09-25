@@ -150,7 +150,7 @@ class SIB_API {
 			return false;
 		}
 
-		$args['listIds'] = array( $this->list_id );
+		$args['listIds'] = array( absint( $this->list_id ) );
 		$args['updateEnabled'] = true;
 		$customer = false;
 		if ( is_numeric( $email_or_data ) ) {
@@ -245,6 +245,7 @@ function SIB_Init(){
 	}
 
 	add_action( 'edd_update_payment_status', 'edd_sib_payment_send_contact_info' );
+	add_action( 'edd_payment_saved', 'edd_sib_payment_send_contact_info' );
 	add_action( 'edd_payment_delete', 'edd_sib_payment_send_deleted_contact_info' );
 	add_action( 'user_register', 'edd_sib_send_wp_user_info' );
 	add_action( 'edd_post_insert_customer', 'edd_sib_send_wp_customer_info' );
