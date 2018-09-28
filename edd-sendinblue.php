@@ -243,7 +243,7 @@ function SIB_Init(){
 	if ( ! class_exists( 'Easy_Digital_Downloads' ) ) {
 		return; //Support EDD Only
 	}
-
+	
 	add_action( 'edd_update_payment_status', 'edd_sib_payment_send_contact_info' );
 	add_action( 'edd_payment_saved', 'edd_sib_payment_send_contact_info' );
 	add_action( 'edd_payment_delete', 'edd_sib_payment_send_deleted_contact_info' );
